@@ -7,6 +7,7 @@
 from knack.arguments import CLIArgumentType
 
 from azure.cli.core.commands.parameters import (name_type, get_enum_type)
+from azure.mgmt.kusto.models import DatabasePrincipal
 
 from .custom import (
     AzureSkuName
@@ -37,3 +38,23 @@ def load_arguments(self, _):
     # Kusto database list
     with self.argument_context('kusto database list') as c:
         c.argument('cluster_name', id_part=None)
+
+    # Kusto data connections
+    with self.argument_context('kusto database data_connection') as c:
+        c.ignore('kusto_management_request_options')
+        c.argument('cluster_name', help='The name of the cluster.', id_part='name')
+        c.argument('database_name', help='The name of the database.', id_part='child_name_1')
+        c.argument('data_connection_name', arg_type=name_type, help='The name of the data connection.', id_part='child_name_2')
+
+
+    # Kusto data connections
+    with self.argument_context('kusto database principals') as c:
+        c.ignore('kusto_management_request_options')
+        c.argument('cluster_name', help='The name of the cluster.')
+        c.argument('database_name', help='The name of the database.')
+        c.argument('role', help='The name of the database.')
+        c.argument('principal_name', help='The name of the database.')
+        c.argument('type', help='The name of the database.')
+        c.argument('fqn', help='The name of the database.')
+        c.argument('email', help='The name of the database.')
+        c.argument('app_id', help='The name of the database.')

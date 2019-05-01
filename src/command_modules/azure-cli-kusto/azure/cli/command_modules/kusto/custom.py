@@ -20,6 +20,13 @@ class AzureSkuName(Enum):
     d11_v2 = "D11_v2"
     d12_v2 = "D12_v2"
     l4 = "L4"
+    d13_v2_standard = "Standard_D13_v2"
+    d14_v2_standard = "Standard_D14_v2"
+    l8_standard = "Standard_L8"
+    l16_standard = "Standard_L16"
+    d11_v2_standard = "Standard_D11_v2"
+    d12_v2_standard = "Standard_D12_v2"
+    l4_standard = "Standard_L4"
 
 
 def cluster_create(cmd,
@@ -170,9 +177,171 @@ def update_kusto_database(instance, soft_delete_period, hot_cache_period=None):
 
     return instance
 
+def update_kusto_data_connection(instance, table_name=None, mapping_rule_name=None, data_format=None):
+
+    instance.table_name = table_name
+    instance.mapping_rule_name = mapping_rule_name
+    instance.data_format = data_format
+
+    return instance
 
 def _get_resource_group_location(cli_ctx, resource_group_name):
 
     client = get_mgmt_service_client(cli_ctx, ResourceManagementClient)
     # pylint: disable=no-member
     return client.resource_groups.get(resource_group_name).location
+
+def data_connection_create_eventhub(cmd,
+                    resource_group_name,
+                    cluster_name,
+                    database_name,
+                    data_connection_name,
+                    event_hub_resource_id=None,
+                    consumer_group=None,
+                    table_name=None,
+                    mapping_rule_name=None,
+                    data_format=None,
+                    custom_headers=None,
+                    raw=False,
+                    polling=True,
+                    no_wait=False,
+                    **kwargs):
+    from azure.mgmt.kusto.models import EventHubDataConnection
+    from azure.mgmt.kusto.models import EventGridDataConnection
+    from azure.cli.command_modules.kusto._client_factory import cf_data_connection
+
+    _client = cf_data_connection(cmd.cli_ctx, None)
+    _cluster = _cluster_get(cmd, resource_group_name, cluster_name, custom_headers, raw, **kwargs)
+
+    if no_wait:
+        location = _cluster.output.location
+    else:
+        location = _cluster.location
+
+    _data_connection = EventHubDataConnection(location=location,
+                                              event_hub_resource_id=event_hub_resource_id,
+                                              consumer_group=consumer_group,
+                                              table_name=table_name,
+                                              mapping_rule_name=mapping_rule_name,
+                                              data_format=data_format)
+
+    return sdk_no_wait(no_wait,
+                       _client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       database_name=database_name,
+                       data_connection_name=data_connection_name,
+                       parameters=_data_connection,
+                       custom_headers=custom_headers,
+                       raw=raw,
+                       polling=polling,
+                       operation_config=kwargs)
+
+def data_connection_create_eventgrid(cmd,
+                    resource_group_name,
+                    cluster_name,
+                    database_name,
+                    data_connection_name,
+                    storage_account_resource_id=None,
+                    event_hub_resource_id=None,
+                    consumer_group=None,
+                    table_name=None,
+                    mapping_rule_name=None,
+                    data_format=None,
+                    custom_headers=None,
+                    raw=False,
+                    polling=True,
+                    no_wait=False,
+                    **kwargs):
+    from azure.mgmt.kusto.models import EventHubDataConnection
+    from azure.mgmt.kusto.models import EventGridDataConnection
+    from azure.cli.command_modules.kusto._client_factory import cf_data_connection
+
+    _client = cf_data_connection(cmd.cli_ctx, None)
+    _cluster = _cluster_get(cmd, resource_group_name, cluster_name, custom_headers, raw, **kwargs)
+
+    if no_wait:
+        location = _cluster.output.location
+    else:
+        location = _cluster.location
+
+    _data_connection = EventGridDataConnection(location=location,
+                                               storage_account_resource_id=storage_account_resource_id,
+                                               event_hub_resource_id=event_hub_resource_id,
+                                               consumer_group=consumer_group,
+                                               table_name=table_name,
+                                               mapping_rule_name=mapping_rule_name,
+                                               data_format=data_format)
+
+    return sdk_no_wait(no_wait,
+                       _client.create_or_update,
+                       resource_group_name=resource_group_name,
+                       cluster_name=cluster_name,
+                       database_name=database_name,
+                       data_connection_name=data_connection_name,
+                       parameters=_data_connection,
+                       custom_headers=custom_headers,
+                       raw=raw,
+                       polling=polling,
+                       operation_config=kwargs)
+
+def database_principal_add(cmd,
+                    resource_group_name,
+                    cluster_name,
+                    database_name,
+                    role=None,
+                    principal_name=None,
+                    type=None,
+                    fqn=None,
+                    email=None,
+                    app_id=None,
+                    custom_headers=None,
+                    raw=False,
+                    polling=True,
+                    **kwargs):
+    
+    from azure.mgmt.kusto.models import DatabasePrincipal
+    from azure.cli.command_modules.kusto._client_factory import cf_database
+
+    db_principal = DatabasePrincipal(role=role,name=principal_name,type=type,fqn=fqn,email=email,app_id=app_id)
+    database_principals = [db_principal]
+    _client = cf_database(cmd.cli_ctx, None)
+   
+    _client.add_principals(resource_group_name=resource_group_name,
+                           cluster_name=cluster_name,
+                           database_name=database_name,
+                           value=database_principals,
+                           custom_headers=custom_headers,
+                           raw=raw,
+                           operation_config=kwargs)
+
+def database_principal_remove(cmd,
+                    resource_group_name,
+                    cluster_name,
+                    database_name,
+                    role=None,
+                    principal_name=None,
+                    type=None,
+                    fqn=None,
+                    email=None,
+                    app_id=None,
+                    custom_headers=None,
+                    raw=False,
+                    polling=True,
+                    no_wait=False,
+                    **kwargs):
+    
+    from azure.mgmt.kusto.models import DatabasePrincipal
+    from azure.cli.command_modules.kusto._client_factory import cf_database
+
+    db_principal = DatabasePrincipal(role=role,name=principal_name,type=type,fqn=fqn,email=email,app_id=app_id)
+    database_principals = [db_principal]
+    _client = cf_database(cmd.cli_ctx, None)
+   
+    _client.remove_principals(resource_group_name=resource_group_name,
+                           cluster_name=cluster_name,
+                           database_name=database_name,
+                           value=database_principals,
+                           custom_headers=custom_headers,
+                           raw=raw,
+                           operation_config=kwargs)

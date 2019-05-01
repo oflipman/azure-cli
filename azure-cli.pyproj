@@ -5,14 +5,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{938454f7-93bd-41a7-84b2-3c89d64b969d}</ProjectGuid>
     <ProjectHome>src\</ProjectHome>
-    <StartupFile>azure-cli\azure\cli\__main__.py</StartupFile>
+    <StartupFile>command_modules\azure-cli-kusto\azure\cli\command_modules\kusto\tests\latest\test_kusto_commands.py</StartupFile>
     <SearchPath>.</SearchPath>
     <WorkingDirectory>
     </WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterId>MSBuild|{2151c13d-4041-4c88-bb0b-54ce1a741de6}|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <CommandLineArguments>
     </CommandLineArguments>
@@ -1339,25 +1339,17 @@
     <Content Include="command_modules\azure-cli-vm\HISTORY.rst" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="..\..\env2\">
-      <Id>{f0ce7f81-ab4f-4088-b037-81002e6ddc44}</Id>
+    <InterpreterReference Include="Global|PythonCore|2.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="..\env\">
+      <Id>env</Id>
       <Version>2.7</Version>
-      <Description>env2 (Python 2.7)</Description>
+      <Description>env (Python 2.7 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <LibraryPath>Lib\</LibraryPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>X86</Architecture>
-    </Interpreter>
-    <Interpreter Include="..\..\env3\">
-      <Id>{2151c13d-4041-4c88-bb0b-54ce1a741de6}</Id>
-      <Version>3.5</Version>
-      <Description>env3 (Python 3.6)</Description>
-      <InterpreterPath>Scripts\python.exe</InterpreterPath>
-      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <LibraryPath>Lib\</LibraryPath>
-      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>Amd64</Architecture>
+      <Architecture>X64</Architecture>
     </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

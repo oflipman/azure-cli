@@ -19,6 +19,9 @@ def cf_cluster(cli_ctx, _):
 def cf_database(cli_ctx, _):
     return get_kusto_management_client(cli_ctx).databases
 
+def cf_data_connection(cli_ctx, _):
+    return get_kusto_management_client(cli_ctx).data_connections
+
 
 def cf_resource_groups(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES,
