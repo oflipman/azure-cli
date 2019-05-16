@@ -46,10 +46,10 @@ def load_command_table(self, _):
         g.show_command('show', 'get')
         g.wait_command('wait')
 
-    with self.command_group('kusto database data_connection',
+    with self.command_group('kusto database data-connection',
                             data_connection_operations,
                             client_factory=cf_data_connection) as g:
-        g.custom_command('create_eventhub_connection', 'data_connection_create_eventhub', supports_no_wait=True)
+        g.custom_command('create-eventhub-connection', 'data_connection_create_eventhub', supports_no_wait=True)
         g.custom_command('create_eventgrid_connection', 'data_connection_create_eventgrid', supports_no_wait=True)
         g.command('delete', 'delete', confirmation=True)
         g.generic_update_command('update', custom_func_name='update_kusto_data_connection', supports_no_wait=True)
